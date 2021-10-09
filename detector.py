@@ -1,19 +1,24 @@
 import cv2
 import numpy as np
-
-
+cv2.namedWindow("Window")
+def empty(x):
+    pass
 cap=cv2.VideoCapture(0)
 
 success,frame1=cap.read()
 #frame1=cv2.resize(frame1,(0,0),None,0.2,0.2)
 success,frame2=cap.read()
 #frame2=cv2.resize(frame2,(0,0),None,0.2,0.2)
+cv2.createTrackbar("Threshold1","Window",20,255,empty)
+cv2.createTrackbar("Threshold2","Window",255,255,empty)
 while True:
     
     diff=cv2.absdiff(frame2,frame1)
     diffgray=cv2.cvtColor(diff,cv2.COLOR_BGR2GRAY)
     diffblur=cv2.GaussianBlur(diffgray,(5,5),0)
-    _,thr=cv2.threshold(diffblur,20,255,cv2.THRESH_BINARY)
+    thresh1=cv2.getTrackbarPos("Threshold1","Window")
+    thresh2=cv2.getTrackbarPos("Threshold2","Window")
+    _,thr=cv2.threshold(diffblur,thresh1,thresh2,cv2.THRESH_BINARY)
     
     kernel=np.ones((5,5))
     imgdilate=cv2.dilate(thr,kernel,iterations=3)
